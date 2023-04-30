@@ -45,7 +45,7 @@ exports.createTour = (req, res) => {
 
 // Route Handler - Update a Tour
 exports.updateTour = (req, res) => {
-  if (Number(req.params.id >= tours.length)) {
+  if (Number(req.params.id )>= tours.length) {
     return res.status(404).json({
       status: "fail",
       message: "Invalid ID",

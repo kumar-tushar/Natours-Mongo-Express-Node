@@ -4,7 +4,8 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "nodemon server.js",
+    "start:prod": "SET NODE_ENV=production nodemon server.js"
   },
   "author": "Tushar Kumar Verma",
   "license": "ISC",
