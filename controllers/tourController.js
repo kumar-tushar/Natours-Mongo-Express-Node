@@ -1,30 +1,36 @@
 const Tour = require("../models/tourModel")
 
 // Route Handler - Get all Tours
-exports.getAllTours = (req, res) => {
-  res.status(200).json({
-    status: "success",
-    // results: tours.length,
-    // data: { tours },
-  })
+exports.getAllTours = async (req, res) => {
+  try {
+    const tours = await Tour.find()
+    res.status(200).json({
+      status: "success",
+      results: tours.length,
+      data: { tours },
+    })
+  } catch (error) {
+    res.status(404).json({
+      status: "fail",
+      message: error.message,
+    })
+  }
 }
 
 // Route Handler - Get one Tour
-exports.getTour = (req, res) => {
-  const id = Number(req.params.id)
-  // const tour = tours.find((tour) => tour.id === id)
-  //
-  // if (!tour) {
-  //   return res.status(404).json({
-  //     status: "fail",
-  //     message: "Invalid ID",
-  //   })
-  // }
-
-  res.status(200).json({
-    status: "success",
-    // data: { tour },
-  })
+exports.getTour = async (req, res) => {
+  try {
+    const tour = await Tour.findById(req.params.id)
+    res.status(200).json({
+      status: "success",
+      data: { tour },
+    })
+  } catch (error) {
+    res.status(404).json({
+      status: "fail",
+      message: error.message,
+    })
+  }
 }
 
 // Route Handler - Create a new Tour
@@ -46,30 +52,10 @@ exports.createTour = async (req, res) => {
 
 // Route Handler - Update a Tour
 exports.updateTour = (req, res) => {
-  // if (Number(req.params.id )>= tours.length) {
-  //   return res.status(404).json({
-  //     status: "fail",
-  //     message: "Invalid ID",
-  //   })
-  // }
 
-  res.status(200).json({
-    status: "success",
-    // data: { tour: "Updated Tour" },
-  })
 }
 
 // Route Handler - Delete a Tour
 exports.deleteTour = (req, res) => {
-  // if (Number(req.params.id >= tours.length)) {
-  //   return res.status(404).json({
-  //     status: "fail",
-  //     message: "Invalid ID",
-  //   })
-  // }
 
-  res.status(204).json({
-    status: "success",
-    data: null,
-  })
 }
