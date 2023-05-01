@@ -51,11 +51,21 @@ exports.createTour = async (req, res) => {
 }
 
 // Route Handler - Update a Tour
-exports.updateTour = (req, res) => {
+exports.updateTour = async (req, res) => {
+  try {
+    const tour = await Tour.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true })
 
+    res.status(200).json({
+      status: "success",
+      data: { tour },
+    })
+  } catch (error) {
+    res.status(404).json({
+      status: "fail",
+      message: error.message,
+    })
+  }
 }
 
 // Route Handler - Delete a Tour
-exports.deleteTour = (req, res) => {
-
-}
+exports.deleteTour = (req, res) => {}
