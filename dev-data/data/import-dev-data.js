@@ -1,7 +1,8 @@
-require('dotenv').config({ path: '../../.env' })
+require('dotenv').config({ path: `${__dirname}/../../.env` })
 const mongoose = require('mongoose')
 const fs = require('fs')
 const Tour = require('./../../models/tourModel')
+console.log(`${__dirname}`)
 
 mongoose
   .connect(process.env.DATABASE_URL, { useNewUrlParser: true, useUnifiedTopology: true })
