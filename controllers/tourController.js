@@ -9,10 +9,10 @@ exports.getAllTours = async (req, res) => {
       results: tours.length,
       data: { tours },
     });
-  } catch (error) {
+  } catch (err) {
     res.status(404).json({
       status: 'fail',
-      message: error.message,
+      message: err.message,
     });
   }
 };
@@ -42,10 +42,10 @@ exports.createTour = async (req, res) => {
       status: 'success',
       data: { newTour },
     });
-  } catch (error) {
+  } catch (err) {
     res.status(400).json({
       status: 'fail',
-      message: error.message,
+      message: err.message,
     });
   }
 };
