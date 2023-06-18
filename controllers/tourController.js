@@ -3,7 +3,13 @@ const Tour = require('../models/tourModel');
 // Route Handler - Get all Tours
 exports.getAllTours = async (req, res) => {
   try {
-    const tours = await Tour.find();
+    const requestQuery = { ...req.query };
+    const nonFilterQueryParams = ['page', 'sort', 'limit', 'fields'];
+    nonFilterQueryParams.forEach((element) => delete requestQuery[element]);
+
+    const toursQuery = Tour.find(requestQuery);
+    const tours = await toursQuery;
+
     res.status(200).json({
       status: 'success',
       results: tours.length,
@@ -25,10 +31,10 @@ exports.getTour = async (req, res) => {
       status: 'success',
       data: { tour },
     });
-  } catch (error) {
+  } catch (err) {
     res.status(404).json({
       status: 'fail',
-      message: error.message,
+      message: err.message,
     });
   }
 };
@@ -59,10 +65,10 @@ exports.updateTour = async (req, res) => {
       status: 'success',
       data: { tour },
     });
-  } catch (error) {
+  } catch (err) {
     res.status(404).json({
       status: 'fail',
-      message: error.message,
+      message: err.message,
     });
   }
 };
@@ -76,10 +82,10 @@ exports.deleteTour = async (req, res) => {
       status: 'success',
       data: null,
     });
-  } catch (error) {
+  } catch (err) {
     res.status(404).json({
       status: 'fail',
-      message: error.message,
+      message: err.message,
     });
   }
 };
