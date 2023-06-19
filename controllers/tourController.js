@@ -16,10 +16,18 @@ exports.getAllTours = async (req, res) => {
 
     // Sorting
     if (req.query.sort) {
-      const sortFields = req.query.sort.split(',').join(' ');
-      toursQuery = toursQuery.sort(sortFields);
+      const sort = req.query.sort.split(',').join(' ');
+      toursQuery = toursQuery.sort(sort);
     } else {
       toursQuery = toursQuery.sort('-createdAt');
+    }
+
+    // Limiting
+    if (req.query.fields) {
+      const fields = req.query.fields.split(',').join(' ');
+      toursQuery = toursQuery.select(fields);
+    } else {
+      toursQuery = toursQuery.select('-__v');
     }
 
     const tours = await toursQuery;
