@@ -3,13 +3,26 @@ const Tour = require('../models/tourModel');
 // Route Handler - Get all Tours
 exports.getAllTours = async (req, res) => {
   try {
-    const requestQuery = { ...req.query };
+    // Filtering
+    const reqQueryObj = { ...req.query };
     const nonFilterQueryParams = ['page', 'sort', 'limit', 'fields'];
-    nonFilterQueryParams.forEach((element) => delete requestQuery[element]);
+    nonFilterQueryParams.forEach((element) => delete reqQueryObj[element]);
 
-    const toursQuery = Tour.find(requestQuery);
+    // Advanced Filtering
+    let reqQueryStr = JSON.stringify(reqQueryObj);
+    reqQueryStr = reqQueryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
+
+    let toursQuery = Tour.find(JSON.parse(reqQueryStr));
+
+    // Sorting
+    if (req.query.sort) {
+      const sortFields = req.query.sort.split(',').join(' ');
+      toursQuery = toursQuery.sort(sortFields);
+    } else {
+      toursQuery = toursQuery.sort('-createdAt');
+    }
+
     const tours = await toursQuery;
-
     res.status(200).json({
       status: 'success',
       results: tours.length,
