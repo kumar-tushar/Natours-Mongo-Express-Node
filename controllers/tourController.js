@@ -10,7 +10,6 @@ exports.aliasTopTours = (req, res, next) => {
 
 // Route Handler - Get all Tours
 exports.getAllTours = async (req, res) => {
-  console.log(req.query);
   try {
     // Filtering
     const reqQueryObj = { ...req.query };
