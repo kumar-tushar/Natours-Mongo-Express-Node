@@ -129,7 +129,7 @@ exports.deleteTour = async (req, res) => {
   }
 };
 
-// Aggregation Pipeline - Match, Group, Sort
+// Aggregation Pipeline - match, group, Sort
 exports.getTourStats = async (req, res) => {
   try {
     const stats = await Tour.aggregate([
@@ -162,7 +162,7 @@ exports.getTourStats = async (req, res) => {
   }
 };
 
-// Aggregation Pipeline - Unwind, Project
+// Aggregation Pipeline - unwind, project, addFields, limit
 exports.getMonthlyPlan = async (req, res) => {
   try {
     const year = parseInt(req.params.year);
