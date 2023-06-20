@@ -10,7 +10,6 @@ exports.aliasTopTours = (req, res, next) => {
 
 // Route Handler - Get all Tours
 exports.getAllTours = async (req, res) => {
-  console.log(req.query);
   try {
     // Filtering
     const reqQueryObj = { ...req.query };
@@ -130,7 +129,7 @@ exports.deleteTour = async (req, res) => {
   }
 };
 
-//
+// Aggregation Pipeline - Match, Group, Sort
 exports.getTourStats = async (req, res) => {
   try {
     const stats = await Tour.aggregate([
@@ -154,6 +153,31 @@ exports.getTourStats = async (req, res) => {
     res.status(200).json({
       status: 'success',
       data: stats,
+    });
+  } catch (err) {
+    res.status(404).json({
+      status: 'fail',
+      message: err.message,
+    });
+  }
+};
+
+// Aggregation Pipeline - Unwind, Project
+exports.getMonthlyPlan = async (req, res) => {
+  try {
+    const year = parseInt(req.params.year);
+    const plan = await Tour.aggregate([
+      { $unwind: '$startDates' },
+      { $match: { startDates: { $gte: new Date(`${year}-01-01`), $lte: new Date(`${year}-12-31`) } } },
+      { $group: { _id: { $month: '$startDates' }, numTours: { $sum: 1 }, tourNames: { $push: '$name' } } },
+      { $addFields: { month: '$_id' } },
+      { $project: { _id: 0 } },
+      { $sort: { numTours: -1 } },
+      { $limit: 12 },
+    ]);
+    res.status(200).json({
+      status: 'success',
+      data: plan,
     });
   } catch (err) {
     res.status(404).json({
