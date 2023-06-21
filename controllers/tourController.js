@@ -43,10 +43,6 @@ exports.getAllTours = async (req, res) => {
     const limit = parseInt(req.query.limit) || 100;
     const skip = (page - 1) * limit;
     toursQuery = toursQuery.skip(skip).limit(limit);
-    if (req.query.page) {
-      const toursCount = await Tour.countDocuments();
-      if (skip >= toursCount) throw new Error("This page doesn't exist");
-    }
 
     const tours = await toursQuery;
     res.status(200).json({
@@ -66,6 +62,13 @@ exports.getAllTours = async (req, res) => {
 exports.getTour = async (req, res) => {
   try {
     const tour = await Tour.findById(req.params.id);
+
+    if (!tour) {
+      return res.status(404).json({
+        status: 'fail',
+        message: 'No tour found',
+      });
+    }
 
     res.status(200).json({
       status: 'success',
@@ -101,6 +104,13 @@ exports.updateTour = async (req, res) => {
   try {
     const tour = await Tour.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
 
+    if (!tour) {
+      return res.status(404).json({
+        status: 'fail',
+        message: 'No tour found',
+      });
+    }
+
     res.status(200).json({
       status: 'success',
       data: { tour },
@@ -116,7 +126,14 @@ exports.updateTour = async (req, res) => {
 // Route Handler - Delete a Tour
 exports.deleteTour = async (req, res) => {
   try {
-    await Tour.findByIdAndDelete(req.params.id);
+    const tour = await Tour.findByIdAndDelete(req.params.id);
+
+    if (!tour) {
+      return res.status(404).json({
+        status: 'fail',
+        message: 'No tour found',
+      });
+    }
 
     res.status(204).json({
       status: 'success',
