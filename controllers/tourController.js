@@ -75,9 +75,17 @@ exports.getTour = async (req, res) => {
       data: { tour },
     });
   } catch (err) {
-    res.status(404).json({
-      status: 'fail',
-      message: err.message,
+    let message = 'Something went wrong';
+
+    if (err.name === 'CastError') {
+      message = 'Invalid tour ID';
+    } else if (err.name === 'ValidationError') {
+      message = err.message;
+    }
+
+    res.status(500).json({
+      status: 'error',
+      message,
     });
   }
 };
@@ -92,9 +100,19 @@ exports.createTour = async (req, res) => {
       data: { newTour },
     });
   } catch (err) {
+    if (err.code === 11000 && err.keyPattern && err.keyValue) {
+      const duplicateValue = err.keyValue.name;
+      const errorMessage = `Duplicate value found: ${duplicateValue}`;
+
+      return res.status(400).json({
+        status: 'fail',
+        message: errorMessage,
+      });
+    }
+
     res.status(400).json({
       status: 'fail',
-      message: err.message,
+      message: err,
     });
   }
 };
